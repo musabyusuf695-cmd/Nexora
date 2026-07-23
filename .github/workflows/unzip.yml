@@ -1,0 +1,26 @@
+name: Join and Unzip Images
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install p7zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+
+      - name: Extract split archive
+        run: 7z x images.zip.001
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Extract images" || echo "No changes"
+          git push
